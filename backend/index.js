@@ -1,15 +1,32 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import cors from 'cors'
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import mongoose from 'mongoose';
 
+// Load environment variables
+dotenv.config();
 
 const app = express();
-//to make input as json
+
+// Middleware
 app.use(express.json());
 app.use(cors());
-app.use(express.static("public"));//jitna bhi static  file rahega vo public file me rahega
+app.use(express.static("public")); // Serve static files from "public" directory
 
-app.listen(3000,(err)=>{
-    console.log("server is running on port 3000");
-    
-})
+// MongoDB Connection
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB:", err.message);
+  });
+
+// Start Server
+app.listen(3000, (err) => {
+  if (err) {
+    console.error("Error starting server:", err.message);
+  } else {
+    console.log("Server is running on port 3000");
+  }
+});
